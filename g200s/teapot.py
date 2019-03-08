@@ -52,16 +52,8 @@ class Teapot:
     def __init__(self, mac, key=b'\xff\xff\xff\xff\xff\xff\xff\xff'):
         self.mac = mac
         self.key = key
-        self.connection = btle.Peripheral(deviceAddr=self.mac, addrType=btle.ADDR_TYPE_RANDOM)
+        self.connect()
 
-        delegate = NotificationDispatcher(self)
-        self.connection.setDelegate(delegate)
-
-        self._enable_notifications()
-        self._set_write_handle()
-        self.auth()
-        self._read_version()
-        self._get_mode()
 
     @property
     def authorized(self):
@@ -102,6 +94,18 @@ class Teapot:
     @state.setter
     def state(self, value):
         self._state = value
+
+    def connect(self):
+        self.connection = btle.Peripheral(deviceAddr=self.mac, addrType=btle.ADDR_TYPE_RANDOM)
+
+        delegate = NotificationDispatcher(self)
+        self.connection.setDelegate(delegate)
+
+        self._enable_notifications()
+        self._set_write_handle()
+        self.auth()
+        self._read_version()
+        self._get_mode()
 
     def _enable_notifications(self):
         ch = self.connection.getCharacteristics(uuid=self.notify_uuid)[0]
