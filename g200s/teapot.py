@@ -180,6 +180,9 @@ class Teapot:
         self._set_mode(Mode.LAMP)
         self.run()
 
+    def disconnect(self):
+        self.connection.disconnect()
+
 
 class NotificationDispatcher(btle.DefaultDelegate):
 
